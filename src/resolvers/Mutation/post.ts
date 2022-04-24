@@ -5,6 +5,7 @@ interface PostArgs {
     post: {
         title?: string
         content?: string
+    }
 }
 
 interface PostPayloadType {
@@ -15,8 +16,17 @@ interface PostPayloadType {
 }
 
 export const postResolvers = {
-    postCreate: async (_: any, { post }: PostArgs, { prisma }: Context): 
+    postCreate: async (_: any, { post }: PostArgs, { prisma, userInfo }: Context): 
         Promise<PostPayloadType> => {
+            if(!userInfo) {
+                return {
+                    userErrors: [{
+                        message: "Unauthenticated"
+                    }],
+                    post: null
+                }
+            }
+
             const { title, content } = post
             if(!title || !content) {
                 return {
@@ -33,7 +43,7 @@ export const postResolvers = {
                 data: {
                     title,
                     content,
-                    authorId: 1
+                    authorId: userInfo.userId
                 }
             })
         }
