@@ -11,13 +11,12 @@ export const typeDefs = gql`
         postDelete(postId: ID!): PostPayload!
         signup(
             credentials: CredentialsInput!
-            name: String!, 
+            name: String!
             bio: String!
         ): AuthPayload!
         signin(
             credentials: CredentialsInput!
-
-        )
+        ): AuthPayload!
 
     }
 

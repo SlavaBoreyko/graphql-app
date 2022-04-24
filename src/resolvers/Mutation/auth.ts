@@ -1,9 +1,8 @@
 import { Context } from "../../index"
 import validator from "validator"
 import bcrypt from "bcryptjs"
-import { User } from "@prisma/client";
 import JWT from "jsonwebtoken"
-import JWT_SIGNATURE from "../../keys"
+import { JWT_SIGNATURE } from "../../keys"
 
 interface SignupArgs {
     credentials: {
@@ -27,9 +26,12 @@ interface UserPayload {
     }[],
     token: string | null
 }
+
 export const authResolvers = {
     signup: async(
-        _:any, { credentials, password, bio }: SignupArgs, { prisma }: Context
+        _:any, 
+        { credentials, name, bio }: SignupArgs, 
+        { prisma }: Context
     ): Promise<UserPayload> => {
 
         const { email, password } = credentials
@@ -125,10 +127,9 @@ export const authResolvers = {
 
         return {
             userErrors: [],
-            token: JWT.sign({ userId: user.id }, JSON_SIGNATURE, {
+            token: JWT.sign({ userId: user.id }, JWT_SIGNATURE, {
                 expiresIn: 3600000,
             })
         }
-
     }
 }
